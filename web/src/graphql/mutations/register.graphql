@@ -1,0 +1,6 @@
+mutation Register($options: RegisterUserInput!) {
+  register(options: $options) {
+    firstName
+    createdAt
+  }
+}

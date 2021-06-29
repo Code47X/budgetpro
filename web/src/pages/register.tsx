@@ -8,6 +8,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { Avatar, Typography } from "@material-ui/core";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import { useRegisterMutation } from "../generated/graphql";
 
 const useStyles = makeStyles(({ spacing, palette }: Theme) =>
   createStyles({
@@ -33,6 +34,7 @@ const useStyles = makeStyles(({ spacing, palette }: Theme) =>
 
 const RegisterPage: React.FC = () => {
   const cn = useStyles();
+  const [registerMutation] = useRegisterMutation();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -44,7 +46,11 @@ const RegisterPage: React.FC = () => {
           password: "",
         }}
         onSubmit={async (values) => {
-          console.log(values);
+          await registerMutation({
+            variables: {
+              options: values,
+            },
+          });
         }}
       >
         {({ values, touched, errors, handleChange, isSubmitting }) => (
