@@ -1,14 +1,13 @@
-import "reflect-metadata";
-import { createConnection } from "typeorm";
-import express from "express";
 import { ApolloServer } from "apollo-server-express";
-import { buildSchema } from "type-graphql";
-import { UserResolver } from "./graphql/resolvers";
-import redis from "redis";
-import session from "express-session";
 import connectRedis from "connect-redis";
-import { Context } from "./types";
 import cors from "cors";
+import express from "express";
+import session from "express-session";
+import redis from "redis";
+import "reflect-metadata";
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
+import { Context } from "./types";
 
 const main = async () => {
   const connection = await createConnection();
@@ -19,7 +18,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver],
+      resolvers: [__dirname + "/resolvers/**/*.{ts,js}"],
       validate: true,
     }),
     context: ({ req, res }): Context => ({ req, res }),
