@@ -17,7 +17,7 @@ export type Scalars = {
 };
 
 
-export type LoginUserInput = {
+export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
 };
@@ -30,12 +30,12 @@ export type Mutation = {
 
 
 export type MutationRegisterArgs = {
-  options: RegisterUserInput;
+  input: RegisterInput;
 };
 
 
 export type MutationLoginArgs = {
-  options: LoginUserInput;
+  input: LoginInput;
 };
 
 export type Query = {
@@ -43,7 +43,7 @@ export type Query = {
   me?: Maybe<User>;
 };
 
-export type RegisterUserInput = {
+export type RegisterInput = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
@@ -61,7 +61,7 @@ export type User = {
 };
 
 export type RegisterMutationVariables = Exact<{
-  options: RegisterUserInput;
+  input: RegisterInput;
 }>;
 
 
@@ -75,8 +75,8 @@ export type RegisterMutation = (
 
 
 export const RegisterDocument = gql`
-    mutation Register($options: RegisterUserInput!) {
-  register(options: $options) {
+    mutation Register($input: RegisterInput!) {
+  register(input: $input) {
     firstName
     createdAt
   }
@@ -97,7 +97,7 @@ export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, Regis
  * @example
  * const [registerMutation, { data, loading, error }] = useRegisterMutation({
  *   variables: {
- *      options: // value for 'options'
+ *      input: // value for 'input'
  *   },
  * });
  */

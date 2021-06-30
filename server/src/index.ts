@@ -3,7 +3,7 @@ import { createConnection } from "typeorm";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import { UserResolver } from "./resolvers/user";
+import { UserResolver } from "./graphql/resolvers";
 import redis from "redis";
 import session from "express-session";
 import connectRedis from "connect-redis";
@@ -14,10 +14,18 @@ const main = async () => {
   const connection = await createConnection();
   await connection.runMigrations();
 
-  const app = express();
-
   const RedisStore = connectRedis(session);
   const redisClient = redis.createClient();
+
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [UserResolver],
+      validate: true,
+    }),
+    context: ({ req, res }): Context => ({ req, res }),
+  });
+
+  const app = express();
 
   app.use(
     cors({
@@ -42,14 +50,6 @@ const main = async () => {
     })
   );
 
-  const apolloServer = new ApolloServer({
-    schema: await buildSchema({
-      resolvers: [UserResolver],
-      validate: true,
-    }),
-    context: ({ req, res }): Context => ({ req, res }),
-  });
-
   apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(4000, () => {
@@ -57,6 +57,4 @@ const main = async () => {
   });
 };
 
-main().catch((err) => {
-  console.error(err);
-});
+main();

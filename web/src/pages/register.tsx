@@ -48,7 +48,7 @@ const RegisterPage: React.FC = () => {
         onSubmit={async (values) => {
           await registerMutation({
             variables: {
-              options: values,
+              input: values,
             },
           });
         }}
