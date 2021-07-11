@@ -17,6 +17,11 @@ export type Scalars = {
 };
 
 
+export type EmailAlreadyExists = {
+  __typename?: 'EmailAlreadyExists';
+  message: Scalars['String'];
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -24,13 +29,8 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  register: User;
   login: User;
-};
-
-
-export type MutationRegisterArgs = {
-  input: RegisterInput;
+  register: RegisterUserResult;
 };
 
 
@@ -38,21 +38,28 @@ export type MutationLoginArgs = {
   input: LoginInput;
 };
 
+
+export type MutationRegisterArgs = {
+  input: RegisterUserInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
 };
 
-export type RegisterInput = {
+export type RegisterUserInput = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
 };
 
+export type RegisterUserResult = User | EmailAlreadyExists;
+
 export type User = {
   __typename?: 'User';
-  id: Scalars['Float'];
+  id: Scalars['ID'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
@@ -60,51 +67,60 @@ export type User = {
   updatedAt: Scalars['DateTime'];
 };
 
-export type RegisterMutationVariables = Exact<{
-  input: RegisterInput;
+export type RegisterUserMutationVariables = Exact<{
+  input: RegisterUserInput;
 }>;
 
 
-export type RegisterMutation = (
+export type RegisterUserMutation = (
   { __typename?: 'Mutation' }
   & { register: (
     { __typename?: 'User' }
-    & Pick<User, 'firstName' | 'createdAt'>
+    & Pick<User, 'id' | 'firstName' | 'createdAt'>
+  ) | (
+    { __typename?: 'EmailAlreadyExists' }
+    & Pick<EmailAlreadyExists, 'message'>
   ) }
 );
 
 
-export const RegisterDocument = gql`
-    mutation Register($input: RegisterInput!) {
+export const RegisterUserDocument = gql`
+    mutation RegisterUser($input: RegisterUserInput!) {
   register(input: $input) {
-    firstName
-    createdAt
+    ... on User {
+      id
+      firstName
+      createdAt
+    }
+    ... on EmailAlreadyExists {
+      message
+    }
   }
 }
     `;
-export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
+export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutation, RegisterUserMutationVariables>;
 
 /**
- * __useRegisterMutation__
+ * __useRegisterUserMutation__
  *
- * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRegisterMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRegisterUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [registerMutation, { data, loading, error }] = useRegisterMutation({
+ * const [registerUserMutation, { data, loading, error }] = useRegisterUserMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
+export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions<RegisterUserMutation, RegisterUserMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, options);
+        return Apollo.useMutation<RegisterUserMutation, RegisterUserMutationVariables>(RegisterUserDocument, options);
       }
-export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
-export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
-export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
+export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
+export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;

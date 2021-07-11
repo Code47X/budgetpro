@@ -1,0 +1,12 @@
+mutation RegisterUser($input: RegisterUserInput!) {
+  register(input: $input) {
+    ... on User {
+      id
+      firstName
+      createdAt
+    }
+    ... on EmailAlreadyExists {
+      message
+    }
+  }
+}

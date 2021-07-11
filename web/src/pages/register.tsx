@@ -1,14 +1,19 @@
-import React from "react";
-import { Form, Formik } from "formik";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import {
+  Avatar,
+  Button,
+  Container,
+  Fade,
+  Grid,
+  LinearProgress,
+  Typography,
+} from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { Avatar, Typography } from "@material-ui/core";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import { useRegisterMutation } from "../generated/graphql";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { Form, Formik } from "formik";
+import React from "react";
+import * as Yup from "yup";
+import { FormikTextField } from "../components/UI/FormikTextField";
+import { useRegisterUserMutation } from "../generated/graphql";
 
 const useStyles = makeStyles(({ spacing, palette }: Theme) =>
   createStyles({
@@ -23,7 +28,7 @@ const useStyles = makeStyles(({ spacing, palette }: Theme) =>
       backgroundColor: palette.primary.main,
     },
     form: {
-      width: "100%", // Fix IE 11 issue.
+      width: "100%",
       marginTop: spacing(3),
     },
     submitBtn: {
@@ -32,9 +37,32 @@ const useStyles = makeStyles(({ spacing, palette }: Theme) =>
   })
 );
 
+// This array is just used for a yup email validation test
+// when the server responds with "email already in use"
+const emailsInUse: string[] = [];
+
+// Form Validation
+const registerSchema = Yup.object().shape({
+  firstName: Yup.string().trim().max(30, "Too long").required("Required"),
+  lastName: Yup.string().trim().max(30, "Too long").required("Required"),
+  email: Yup.string()
+    .trim()
+    .email("Invalid email")
+    .required("Required")
+    .test("email-already-exists", "Email already exists", function (value) {
+      if (value) {
+        return !emailsInUse.includes(value.toLowerCase());
+      }
+      return true;
+    }),
+  password: Yup.string()
+    .min(6, "Must be at least 6 characters")
+    .required("Required"),
+});
+
 const RegisterPage: React.FC = () => {
-  const cn = useStyles();
-  const [registerMutation] = useRegisterMutation();
+  const classes = useStyles();
+  const [registerMutation] = useRegisterUserMutation();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -45,98 +73,69 @@ const RegisterPage: React.FC = () => {
           email: "",
           password: "",
         }}
-        onSubmit={async (values) => {
-          await registerMutation({
+        onSubmit={async (values, { setFieldError }) => {
+          registerMutation({
             variables: {
               input: values,
             },
+          }).then((res) => {
+            if (res.data?.register.__typename === "EmailAlreadyExists") {
+              setFieldError("email", "Email already exists");
+              emailsInUse.push(values.email);
+            }
+            if (res.data?.register.__typename === "User") {
+              // WIP - Redirect
+              console.log("User Registered:");
+              console.log(res.data.register);
+            }
           });
         }}
+        validationSchema={registerSchema}
       >
-        {({ values, touched, errors, handleChange, isSubmitting }) => (
-          <div className={cn.formContainer}>
-            <Avatar className={cn.avatar}>
+        {({ isSubmitting, submitForm, isValid, submitCount }) => (
+          <div className={classes.formContainer}>
+            <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
               Sign up
             </Typography>
-            <Form className={cn.form}>
+            <Form className={classes.form}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <TextField
-                    id="firstName"
-                    name="firstName"
-                    label="First name"
-                    value={values.firstName}
-                    onChange={handleChange}
-                    error={touched.firstName && Boolean(errors.firstName)}
-                    helperText={touched.firstName && errors.firstName}
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                  />
+                  <FormikTextField name="firstName" trimOnBlur fullWidth />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <TextField
-                    id="lastName"
-                    name="lastName"
-                    label="Last name"
-                    value={values.lastName}
-                    onChange={handleChange}
-                    error={touched.lastName && Boolean(errors.lastName)}
-                    helperText={touched.lastName && errors.lastName}
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                  />
+                  <FormikTextField name="lastName" trimOnBlur fullWidth />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    id="email"
+                  <FormikTextField
                     name="email"
-                    label="Email"
-                    value={values.email}
-                    onChange={handleChange}
-                    error={touched.email && Boolean(errors.email)}
-                    helperText={touched.email && errors.email}
-                    variant="outlined"
-                    size="small"
+                    type="email"
+                    trimOnBlur
                     fullWidth
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    id="password"
-                    name="password"
-                    label="Password"
-                    type="password"
-                    value={values.password}
-                    onChange={handleChange}
-                    error={touched.password && Boolean(errors.password)}
-                    helperText={touched.password && errors.password}
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                  />
+                  <FormikTextField name="password" type="password" fullWidth />
                 </Grid>
                 <Grid item xs={12}>
                   <Button
                     fullWidth
                     color="primary"
                     variant="contained"
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={cn.submitBtn}
+                    disabled={isSubmitting || (submitCount > 0 && !isValid)}
+                    className={classes.submitBtn}
+                    onClick={() => submitForm()}
                   >
-                    Create account
+                    Create Account
                   </Button>
                 </Grid>
-                {isSubmitting && (
-                  <Grid item xs={12}>
+                <Grid item xs={12}>
+                  <Fade in={isSubmitting} timeout={500}>
                     <LinearProgress color="primary" />
-                  </Grid>
-                )}
+                  </Fade>
+                </Grid>
               </Grid>
             </Form>
           </div>

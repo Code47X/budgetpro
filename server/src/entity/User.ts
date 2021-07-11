@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -24,7 +25,8 @@ export class User extends BaseEntity {
   lastName: string;
 
   @Field()
-  @Column({ unique: true })
+  @Column()
+  @Index({ unique: true })
   email: string;
 
   @Column()

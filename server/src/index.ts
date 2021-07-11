@@ -16,14 +16,6 @@ const main = async () => {
   const RedisStore = connectRedis(session);
   const redisClient = redis.createClient();
 
-  const apolloServer = new ApolloServer({
-    schema: await buildSchema({
-      resolvers: [__dirname + "/resolvers/**/*.{ts,js}"],
-      validate: true,
-    }),
-    context: ({ req, res }): Context => ({ req, res }),
-  });
-
   const app = express();
 
   app.use(
@@ -48,6 +40,14 @@ const main = async () => {
       },
     })
   );
+
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [__dirname + "/resolvers/**/*.{ts,js}"],
+      validate: true,
+    }),
+    context: ({ req, res }): Context => ({ req, res }),
+  });
 
   apolloServer.applyMiddleware({ app, cors: false });
 
