@@ -1,9 +1,9 @@
-import TextField, { TextFieldProps } from "@material-ui/core/TextField";
-import { useField } from "formik";
+import TextField, { TextFieldProps } from '@material-ui/core/TextField';
+import { useField } from 'formik';
 
 function camelCaseToLabel(name: string) {
   return name.replace(/^[a-z]|[A-Z]/g, function (v, i) {
-    return i === 0 ? v.toUpperCase() : " " + v.toLowerCase();
+    return i === 0 ? v.toUpperCase() : ' ' + v.toLowerCase();
   });
 }
 
@@ -12,15 +12,9 @@ type FormikTextFieldProps = TextFieldProps & {
   trimOnBlur?: boolean;
 };
 
-export const FormikTextField = ({
-  name,
-  trimOnBlur,
-  ...props
-}: FormikTextFieldProps) => {
+export const FormikTextField = ({ name, trimOnBlur, ...props }: FormikTextFieldProps) => {
   const [field, meta, helpers] = useField(name);
-  const onBlur = trimOnBlur
-    ? () => helpers.setValue(field.value.trim())
-    : undefined;
+  const onBlur = trimOnBlur ? () => helpers.setValue(field.value.trim()) : undefined;
 
   return (
     <TextField
