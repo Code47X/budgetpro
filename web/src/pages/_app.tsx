@@ -1,9 +1,9 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { AppProps } from 'next/app';
+import { AppLayoutProps } from 'next/app';
 import Head from 'next/head';
-import React from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import theme from '../theme';
 
 const client = new ApolloClient({
@@ -12,11 +12,12 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export default function App(props: AppProps) {
+export default function App(props: AppLayoutProps) {
   const { Component, pageProps } = props;
+  const getLayout = Component.getLayout || ((page: ReactNode) => page);
 
-  React.useEffect(() => {
-    // Remove the server-side injected CSS.
+  // Remove the server-side injected CSS
+  useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {
       jssStyles.parentElement!.removeChild(jssStyles);
@@ -32,7 +33,7 @@ export default function App(props: AppProps) {
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
         </ThemeProvider>
       </ApolloProvider>
     </React.Fragment>

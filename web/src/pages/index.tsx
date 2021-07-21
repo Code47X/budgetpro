@@ -4,9 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import { useMeQuery } from '../generated/graphql';
 
-interface IndexPageProps {}
-
-const IndexPage: React.FC<IndexPageProps> = () => {
+const IndexPage: React.FC = () => {
   const { data } = useMeQuery();
 
   return (
