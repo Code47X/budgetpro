@@ -4,38 +4,34 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Budget } from './Budget';
+import { Income } from './Income';
 
 @ObjectType()
 @Entity()
-export class User extends BaseEntity {
+export class IncomeGroup extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
+  @Field(() => ID)
   @Column()
-  firstName: string;
+  budgetId: number;
 
   @Field()
   @Column()
-  lastName: string;
+  name: string;
 
-  @Field()
-  @Column()
-  @Index({ unique: true })
-  email: string;
+  @ManyToOne(() => Budget, budget => budget.incomeGroups)
+  budget: Budget;
 
-  @Column()
-  password: string;
-
-  @OneToMany(() => Budget, budget => budget.user)
-  budgets: Budget[];
+  @OneToMany(() => Income, income => income.incomeGroup)
+  incomes: Income[];
 
   @Field()
   @CreateDateColumn()
