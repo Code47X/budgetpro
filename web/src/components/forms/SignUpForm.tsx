@@ -4,7 +4,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Form, Formik, FormikHelpers } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
-import { useCreateUserMutation } from '../../generated/graphql';
+import { MeDocument, MeQuery, useCreateUserMutation } from '../../generated/graphql';
 import { FormikTextField } from '../inputs/FormikTextField';
 
 const useStyles = makeStyles(({ spacing, palette }: Theme) =>
@@ -67,7 +67,20 @@ const SignUpForm: React.FC = () => {
     const castValues = signupSchema.cast(values);
     helpers.setValues(castValues);
 
-    const { data } = await createUser({ variables: { input: castValues } });
+    const { data } = await createUser({
+      variables: { input: castValues },
+      update: (cache, { data }) => {
+        if (data?.createUser.user) {
+          cache.writeQuery<MeQuery>({
+            query: MeDocument,
+            data: {
+              __typename: 'Query',
+              me: data?.createUser.user,
+            },
+          });
+        }
+      },
+    });
 
     if (data?.createUser.user) {
       console.log(data.createUser.user);
