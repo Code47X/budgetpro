@@ -5,7 +5,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
 import { useLoginMutation } from '../../generated/graphql';
-import { FormikTextField } from '../UI/FormikTextField';
+import { FormikTextField } from '../inputs/FormikTextField';
 
 const useStyles = makeStyles(({ spacing, palette }: Theme) =>
   createStyles({
@@ -49,7 +49,7 @@ const LoginForm: React.FC = () => {
     const castValues = loginSchema.cast(values);
     helpers.setValues(castValues);
 
-    const { data } = await login({ variables: { input: values } });
+    const { data } = await login({ variables: { input: castValues } });
 
     if (data?.login.user) {
       console.log(data.login.user);

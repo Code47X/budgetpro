@@ -5,7 +5,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
 import { useCreateUserMutation } from '../../generated/graphql';
-import { FormikTextField } from '../UI/FormikTextField';
+import { FormikTextField } from '../inputs/FormikTextField';
 
 const useStyles = makeStyles(({ spacing, palette }: Theme) =>
   createStyles({
