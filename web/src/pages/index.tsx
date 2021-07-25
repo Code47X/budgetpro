@@ -1,12 +1,4 @@
-import {
-  Box,
-  Card,
-  createStyles,
-  List,
-  ListItem,
-  ListItemText,
-  makeStyles,
-} from '@material-ui/core';
+import { Box, Card, List, ListItem, ListItemText, makeStyles } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Link from 'next/link';
@@ -15,23 +7,21 @@ import { UserCard } from '../components/UI/UserCard';
 import { ClientSideOnly } from '../components/utils/ClientSideOnly';
 import { withApollo } from '../utils/withApollo';
 
-const useStyles = makeStyles(({ spacing }) =>
-  createStyles({
-    container: {
-      marginTop: spacing(8),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-    linksCard: {
-      width: '100%',
-      marginTop: spacing(3),
-    },
-    listItem: {
-      textAlign: 'center',
-    },
-  })
-);
+const useStyles = makeStyles(({ spacing }) => ({
+  container: {
+    marginTop: spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  linksCard: {
+    width: '100%',
+    marginTop: spacing(3),
+  },
+  listItem: {
+    textAlign: 'center',
+  },
+}));
 
 const IndexPage: React.FC = () => {
   const classes = useStyles();

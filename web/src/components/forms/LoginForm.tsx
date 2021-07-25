@@ -1,33 +1,32 @@
 import { Avatar, Button, Fade, Grid, LinearProgress, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Form, Formik, FormikHelpers } from 'formik';
+import { useRouter } from 'next/router';
 import React from 'react';
 import * as Yup from 'yup';
 import { MeDocument, MeQuery, useLoginMutation } from '../../generated/graphql';
 import { FormikTextField } from '../inputs/FormikTextField';
 
-const useStyles = makeStyles(({ spacing, palette }: Theme) =>
-  createStyles({
-    container: {
-      marginTop: spacing(8),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-    avatar: {
-      margin: spacing(1),
-      backgroundColor: palette.primary.main,
-    },
-    form: {
-      width: '100%',
-      marginTop: spacing(3),
-    },
-    submitBtn: {
-      margin: spacing(1, 0, 1),
-    },
-  })
-);
+const useStyles = makeStyles(({ spacing, palette }: Theme) => ({
+  container: {
+    marginTop: spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: spacing(1),
+    backgroundColor: palette.primary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: spacing(3),
+  },
+  submitBtn: {
+    margin: spacing(1, 0, 1),
+  },
+}));
 
 interface LoginFormValues {
   email: string;
@@ -42,6 +41,7 @@ const loginSchema = Yup.object({
 
 const LoginForm: React.FC = () => {
   const classes = useStyles();
+  const router = useRouter();
   const [login] = useLoginMutation();
   const initialValues: LoginFormValues = loginSchema.cast({});
 
@@ -65,7 +65,7 @@ const LoginForm: React.FC = () => {
     });
 
     if (data?.login.user) {
-      console.log(data.login.user);
+      router.push('/');
     }
     if (data?.login.fieldError) {
       helpers.setFieldError(data.login.fieldError.field, data.login.fieldError.message);

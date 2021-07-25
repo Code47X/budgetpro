@@ -1,15 +1,13 @@
-import { Avatar, Card, CardHeader, createStyles, makeStyles } from '@material-ui/core';
+import { Avatar, Card, CardHeader, makeStyles } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import React from 'react';
 import { useMeQuery } from '../../generated/graphql';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    card: {
-      minWidth: 275,
-    },
-  })
-);
+const useStyles = makeStyles(() => ({
+  card: {
+    minWidth: 275,
+  },
+}));
 
 const getUserInitials = (firstName: string, lastName: string) => {
   return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();

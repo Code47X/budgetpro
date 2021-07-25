@@ -1,33 +1,32 @@
 import { Avatar, Button, Fade, Grid, LinearProgress, Typography } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Form, Formik, FormikHelpers } from 'formik';
+import { useRouter } from 'next/router';
 import React from 'react';
 import * as Yup from 'yup';
 import { MeDocument, MeQuery, useCreateUserMutation } from '../../generated/graphql';
 import { FormikTextField } from '../inputs/FormikTextField';
 
-const useStyles = makeStyles(({ spacing, palette }: Theme) =>
-  createStyles({
-    container: {
-      marginTop: spacing(8),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-    avatar: {
-      margin: spacing(1),
-      backgroundColor: palette.primary.main,
-    },
-    form: {
-      width: '100%',
-      marginTop: spacing(3),
-    },
-    submitBtn: {
-      margin: spacing(1, 0, 1),
-    },
-  })
-);
+const useStyles = makeStyles(({ spacing, palette }: Theme) => ({
+  container: {
+    marginTop: spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: spacing(1),
+    backgroundColor: palette.primary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: spacing(3),
+  },
+  submitBtn: {
+    margin: spacing(1, 0, 1),
+  },
+}));
 
 interface SignUpFormValues {
   firstName: string;
@@ -57,6 +56,7 @@ const signupSchema = Yup.object({
 
 const SignUpForm: React.FC = () => {
   const classes = useStyles();
+  const router = useRouter();
   const [createUser] = useCreateUserMutation();
   const initialValues: SignUpFormValues = signupSchema.cast({});
 
@@ -83,7 +83,7 @@ const SignUpForm: React.FC = () => {
     });
 
     if (data?.createUser.user) {
-      console.log(data.createUser.user);
+      router.push('/');
     }
     if (data?.createUser.fieldError) {
       emailsInUse.push(castValues.email.toLowerCase());
