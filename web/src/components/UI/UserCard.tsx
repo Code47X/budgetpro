@@ -21,7 +21,7 @@ export const UserCard: React.FC = () => {
 
   const cardTitle = data?.me ? `${data.me.firstName} ${data.me.lastName}` : 'User not logged in';
   const cardSubtitle = data?.me ? data.me.email : null;
-  const avatarInitials = data?.me ? getUserInitials(data.me.firstName, data.me.lastName) : null;
+  const avatarInitials = data?.me ? getUserInitials(data.me.firstName, data.me.lastName) : '';
 
   return (
     <Card className={classes.card}>

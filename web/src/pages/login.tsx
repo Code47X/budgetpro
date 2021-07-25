@@ -1,6 +1,7 @@
 import { Container } from '@material-ui/core';
 import React from 'react';
 import LoginForm from '../components/forms/LoginForm';
+import { withApollo } from '../utils/withApollo';
 
 const LoginPage: React.FC = () => {
   return (
@@ -10,4 +11,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default withApollo()(LoginPage);

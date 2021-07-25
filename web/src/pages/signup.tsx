@@ -1,6 +1,7 @@
 import { Container } from '@material-ui/core';
 import React from 'react';
 import SignUpForm from '../components/forms/SignUpForm';
+import { withApollo } from '../utils/withApollo';
 
 const SignUpPage: React.FC = () => {
   return (
@@ -10,4 +11,4 @@ const SignUpPage: React.FC = () => {
   );
 };
 
-export default SignUpPage;
+export default withApollo()(SignUpPage);

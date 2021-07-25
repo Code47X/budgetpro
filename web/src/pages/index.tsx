@@ -12,6 +12,8 @@ import Typography from '@material-ui/core/Typography';
 import Link from 'next/link';
 import React from 'react';
 import { UserCard } from '../components/UI/UserCard';
+import { ClientSideOnly } from '../components/utils/ClientSideOnly';
+import { withApollo } from '../utils/withApollo';
 
 const useStyles = makeStyles(({ spacing }) =>
   createStyles({
@@ -56,14 +58,16 @@ const IndexPage: React.FC = () => {
         </Card>
       </Container>
 
-      <Box position="absolute" bottom={20} left={20}>
-        <Typography variant="body1" gutterBottom>
-          Logged in as:
-        </Typography>
-        <UserCard />
-      </Box>
+      <ClientSideOnly>
+        <Box position="absolute" bottom={20} left={20}>
+          <Typography variant="body1" gutterBottom>
+            Logged in as:
+          </Typography>
+          <UserCard />
+        </Box>
+      </ClientSideOnly>
     </>
   );
 };
 
-export default IndexPage;
+export default withApollo({ ssr: true })(IndexPage);
