@@ -2,7 +2,7 @@ import argon2 from 'argon2';
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver } from 'type-graphql';
 import { User } from '../../../entity/User';
-import { Context } from '../../../types';
+import { MyContext } from '../../../types';
 import { FieldError } from '../../types/FieldError';
 
 @InputType()
@@ -36,7 +36,7 @@ class CreateUserPayload {
 @Resolver()
 export class CreateUserResolver {
   @Mutation(() => CreateUserPayload)
-  async createUser(@Arg('input') input: CreateUserInput, @Ctx() { req }: Context) {
+  async createUser(@Arg('input') input: CreateUserInput, @Ctx() { req }: MyContext) {
     const hashedPassword = await argon2.hash(input.password);
 
     const user = User.create({

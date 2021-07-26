@@ -7,7 +7,7 @@ import redis from 'redis';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
-import { Context } from './types';
+import { MyContext } from './types';
 
 const main = async () => {
   const connection = await createConnection();
@@ -46,7 +46,7 @@ const main = async () => {
       resolvers: [__dirname + '/graphql/resolvers/**/*.{ts,js}'],
       validate: true,
     }),
-    context: ({ req, res }): Context => ({ req, res }),
+    context: ({ req, res }): MyContext => ({ req, res }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });

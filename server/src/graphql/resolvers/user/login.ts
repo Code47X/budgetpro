@@ -2,7 +2,7 @@ import argon2 from 'argon2';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver } from 'type-graphql';
 import { User } from '../../../entity/User';
-import { Context } from '../../../types';
+import { MyContext } from '../../../types';
 import { FieldError } from '../../types/FieldError';
 
 @InputType()
@@ -28,7 +28,7 @@ class LoginPayload {
 @Resolver()
 export class LoginResolver {
   @Mutation(() => LoginPayload)
-  async login(@Arg('input') input: LoginInput, @Ctx() { req }: Context) {
+  async login(@Arg('input') input: LoginInput, @Ctx() { req }: MyContext) {
     const user = await User.findOne({ where: { email: input.email.toLowerCase() } });
     if (!user) {
       return { fieldError: { field: 'email', message: 'Email not found' } } as LoginPayload;

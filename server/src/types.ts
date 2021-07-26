@@ -6,7 +6,7 @@ declare module 'express-session' {
   }
 }
 
-export type Context = {
+export type MyContext = {
   req: Request;
   res: Response;
 };
