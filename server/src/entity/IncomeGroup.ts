@@ -25,12 +25,12 @@ export class IncomeGroup extends BaseEntity {
 
   @Field()
   @Column()
-  name: string;
+  label: string;
 
   @ManyToOne(() => Budget, budget => budget.incomeGroups)
   budget: Budget;
 
-  @OneToMany(() => Income, income => income.incomeGroup)
+  @OneToMany(() => Income, income => income.incomeGroup, { cascade: ['insert'] })
   incomes: Income[];
 
   @Field()

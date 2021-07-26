@@ -27,15 +27,15 @@ export class Budget extends BaseEntity {
 
   @Field()
   @Column()
-  startDate: Date;
+  date: Date;
 
   @ManyToOne(() => User, user => user.budgets)
   user: User;
 
-  @OneToMany(() => IncomeGroup, incomeGroup => incomeGroup.budget)
+  @OneToMany(() => IncomeGroup, incomeGroup => incomeGroup.budget, { cascade: ['insert'] })
   incomeGroups: IncomeGroup[];
 
-  @OneToMany(() => ExpenseGroup, expenseGroup => expenseGroup.budget)
+  @OneToMany(() => ExpenseGroup, expenseGroup => expenseGroup.budget, { cascade: ['insert'] })
   expenseGroups: ExpenseGroup[];
 
   @OneToMany(() => Transaction, transaction => transaction.budget)
