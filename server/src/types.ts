@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import { Session, SessionData } from 'express-session';
+import { User } from './entity/User';
 
 declare module 'express-session' {
   interface SessionData {
@@ -9,4 +11,8 @@ declare module 'express-session' {
 export type MyContext = {
   req: Request;
   res: Response;
+  session: Session & Partial<SessionData>;
+  currentUser?: User;
 };
+
+export type Lazy<T extends object> = Promise<T> | T;

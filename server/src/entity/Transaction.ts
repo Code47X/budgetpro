@@ -6,6 +6,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { Budget } from './Budget';
@@ -17,38 +18,32 @@ import { Income } from './Income';
 export class Transaction extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
+  readonly id: number;
 
-  @Field(() => ID)
+  @ManyToOne(() => Budget, budget => budget.transactions)
+  budget: Budget;
   @Column()
   budgetId: number;
 
-  @Field(() => ID)
-  @Column({ nullable: true })
+  @ManyToOne(() => Income, income => income.transactions)
+  income: Income;
+  @Field(() => ID, { nullable: true })
+  @RelationId((transaction: Transaction) => transaction.income)
   incomeId: number;
 
-  @Field(() => ID)
-  @Column({ nullable: true })
+  @ManyToOne(() => Expense, expense => expense.transactions)
+  expense: Expense;
+  @Field(() => ID, { nullable: true })
+  @RelationId((transaction: Transaction) => transaction.expense)
   expenseId: number;
 
   @Field()
   @Column()
   amount: number; // Placeholder - TODO: decide how to handle storing currency amounts
 
-  @ManyToOne(() => Budget, budget => budget.transactions)
-  budget: Budget;
-
-  @ManyToOne(() => Income, income => income.transactions)
-  income: Income;
-
-  @ManyToOne(() => Expense, expense => expense.transactions)
-  expense: Expense;
-
-  @Field()
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field()
   @UpdateDateColumn()
   updatedAt: Date;
 }

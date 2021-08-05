@@ -7,7 +7,8 @@ import redis from 'redis';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
-import { MyContext } from './types';
+import { User } from './entity/User';
+import { authChecker } from './utils/authChecker';
 
 const main = async () => {
   const connection = await createConnection();
@@ -43,10 +44,17 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [__dirname + '/graphql/resolvers/**/*.{ts,js}'],
+      resolvers: [__dirname + '/resolvers/**/*.{ts,js}'],
       validate: true,
+      authChecker,
+      // globalMiddlewares: [ResolveTime],
     }),
-    context: ({ req, res }): MyContext => ({ req, res }),
+    context: async ({ req, res }) => ({
+      req,
+      res,
+      session: req.session,
+      currentUser: await User.findOne(req.session.userId),
+    }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });

@@ -17,11 +17,7 @@ import { Transaction } from './Transaction';
 export class Expense extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
-
-  @Field(() => ID)
-  @Column()
-  expenseGroupId: number;
+  readonly id: number;
 
   @Field()
   @Column()
@@ -37,11 +33,9 @@ export class Expense extends BaseEntity {
   @OneToMany(() => Transaction, transaction => transaction.expense)
   transactions: Transaction[];
 
-  @Field()
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field()
   @UpdateDateColumn()
   updatedAt: Date;
 }

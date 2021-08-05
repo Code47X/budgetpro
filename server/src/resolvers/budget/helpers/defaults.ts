@@ -1,7 +1,7 @@
-import { Expense } from '../../../../entity/Expense';
-import { ExpenseGroup } from '../../../../entity/ExpenseGroup';
-import { Income } from '../../../../entity/Income';
-import { IncomeGroup } from '../../../../entity/IncomeGroup';
+import { Expense } from '../../../entity/Expense';
+import { ExpenseGroup } from '../../../entity/ExpenseGroup';
+import { Income } from '../../../entity/Income';
+import { IncomeGroup } from '../../../entity/IncomeGroup';
 
 export const defaultIncomeGroups = [
   IncomeGroup.create({

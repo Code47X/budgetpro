@@ -17,11 +17,7 @@ import { Expense } from './Expense';
 export class ExpenseGroup extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
-
-  @Field(() => ID)
-  @Column()
-  budgetId: number;
+  readonly id: number;
 
   @Field()
   @Column()
@@ -30,14 +26,13 @@ export class ExpenseGroup extends BaseEntity {
   @ManyToOne(() => Budget, budget => budget.expenseGroups)
   budget: Budget;
 
-  @OneToMany(() => Expense, expense => expense.expenseGroup, { cascade: ['insert'] })
+  @Field(() => [Expense])
+  @OneToMany(() => Expense, expense => expense.expenseGroup, { eager: true, cascade: ['insert'] })
   expenses: Expense[];
 
-  @Field()
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field()
   @UpdateDateColumn()
   updatedAt: Date;
 }

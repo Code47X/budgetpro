@@ -16,7 +16,7 @@ import { Budget } from './Budget';
 export class User extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
+  readonly id: number;
 
   @Field()
   @Column()
@@ -37,11 +37,9 @@ export class User extends BaseEntity {
   @OneToMany(() => Budget, budget => budget.user)
   budgets: Budget[];
 
-  @Field()
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field()
   @UpdateDateColumn()
   updatedAt: Date;
 }

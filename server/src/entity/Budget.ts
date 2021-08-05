@@ -1,14 +1,16 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Lazy } from '../types';
 import { ExpenseGroup } from './ExpenseGroup';
 import { IncomeGroup } from './IncomeGroup';
 import { Transaction } from './Transaction';
@@ -16,36 +18,46 @@ import { User } from './User';
 
 @ObjectType()
 @Entity()
+@Index(['userId', 'month', 'year'], { unique: true })
 export class Budget extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
-
-  @Field(() => ID)
-  @Column()
-  userId: number;
-
-  @Field()
-  @Column()
-  date: Date;
+  readonly id: number;
 
   @ManyToOne(() => User, user => user.budgets)
   user: User;
+  @Column()
+  userId: number;
 
-  @OneToMany(() => IncomeGroup, incomeGroup => incomeGroup.budget, { cascade: ['insert'] })
-  incomeGroups: IncomeGroup[];
+  @Field(() => Int)
+  @Column({ type: 'int' })
+  month: number;
 
-  @OneToMany(() => ExpenseGroup, expenseGroup => expenseGroup.budget, { cascade: ['insert'] })
-  expenseGroups: ExpenseGroup[];
+  @Field(() => Int)
+  @Column({ type: 'int' })
+  year: number;
 
-  @OneToMany(() => Transaction, transaction => transaction.budget)
-  transactions: Transaction[];
+  @Field(() => [IncomeGroup])
+  @OneToMany(() => IncomeGroup, incomeGroup => incomeGroup.budget, {
+    lazy: true,
+    cascade: ['insert'],
+  })
+  incomeGroups: Lazy<IncomeGroup[]>;
 
-  @Field()
+  @Field(() => [ExpenseGroup])
+  @OneToMany(() => ExpenseGroup, expenseGroup => expenseGroup.budget, {
+    lazy: true,
+    cascade: ['insert'],
+  })
+  expenseGroups: Lazy<ExpenseGroup[]>;
+
+  @Field(() => [Transaction])
+  @OneToMany(() => Transaction, transaction => transaction.budget, { lazy: true })
+  transactions: Lazy<Transaction[]>;
+
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field()
   @UpdateDateColumn()
   updatedAt: Date;
 }
