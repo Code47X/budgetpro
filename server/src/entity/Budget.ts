@@ -10,9 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Lazy } from '../types';
-import { ExpenseGroup } from './ExpenseGroup';
-import { IncomeGroup } from './IncomeGroup';
+import { BudgetGroup } from './BudgetGroup';
 import { Transaction } from './Transaction';
 import { User } from './User';
 
@@ -20,6 +18,7 @@ import { User } from './User';
 @Entity()
 @Index(['userId', 'month', 'year'], { unique: true })
 export class Budget extends BaseEntity {
+  //
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   readonly id: number;
@@ -37,23 +36,16 @@ export class Budget extends BaseEntity {
   @Column({ type: 'int' })
   year: number;
 
-  @Field(() => [IncomeGroup])
-  @OneToMany(() => IncomeGroup, incomeGroup => incomeGroup.budget, {
-    lazy: true,
-    cascade: ['insert'],
+  @Field(() => [BudgetGroup])
+  @OneToMany(() => BudgetGroup, budgetGroup => budgetGroup.budget, {
+    eager: true,
+    cascade: ['insert', 'update'],
   })
-  incomeGroups: Lazy<IncomeGroup[]>;
-
-  @Field(() => [ExpenseGroup])
-  @OneToMany(() => ExpenseGroup, expenseGroup => expenseGroup.budget, {
-    lazy: true,
-    cascade: ['insert'],
-  })
-  expenseGroups: Lazy<ExpenseGroup[]>;
+  budgetGroups: BudgetGroup[];
 
   @Field(() => [Transaction])
-  @OneToMany(() => Transaction, transaction => transaction.budget, { lazy: true })
-  transactions: Lazy<Transaction[]>;
+  @OneToMany(() => Transaction, transaction => transaction.budget)
+  transactions: Transaction[];
 
   @CreateDateColumn()
   createdAt: Date;

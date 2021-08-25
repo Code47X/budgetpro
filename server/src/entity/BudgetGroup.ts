@@ -10,11 +10,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Budget } from './Budget';
-import { Expense } from './Expense';
+import { BudgetItem } from './BudgetItem';
 
 @ObjectType()
 @Entity()
-export class ExpenseGroup extends BaseEntity {
+export class BudgetGroup extends BaseEntity {
+  //
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   readonly id: number;
@@ -23,12 +24,17 @@ export class ExpenseGroup extends BaseEntity {
   @Column()
   label: string;
 
-  @ManyToOne(() => Budget, budget => budget.expenseGroups)
+  @ManyToOne(() => Budget, budget => budget.budgetGroups)
   budget: Budget;
+  @Column()
+  budgetId: number;
 
-  @Field(() => [Expense])
-  @OneToMany(() => Expense, expense => expense.expenseGroup, { eager: true, cascade: ['insert'] })
-  expenses: Expense[];
+  @Field(() => [BudgetItem])
+  @OneToMany(() => BudgetItem, budgetItem => budgetItem.budgetGroup, {
+    eager: true,
+    cascade: ['insert', 'update'],
+  })
+  budgetItems: BudgetItem[];
 
   @CreateDateColumn()
   createdAt: Date;

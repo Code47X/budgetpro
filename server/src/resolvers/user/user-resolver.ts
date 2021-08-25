@@ -1,40 +1,18 @@
 import argon2 from 'argon2';
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { Args, ArgsType, Ctx, Field, Mutation, ObjectType, Resolver } from 'type-graphql';
+import { Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { User } from '../../entity/User';
 import { MyContext } from '../../types';
-import { ErrorMessage } from '../_types_/ErrorMessage';
+import { CreateUserArgs } from './_inputs';
+import { CreateUserPayload } from './_payloads';
 
-@ArgsType()
-class CreateUserArgs {
-  @Field()
-  @IsNotEmpty()
-  firstName: string;
+@Resolver(() => User)
+export class UserResolver {
+  //
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { currentUser }: MyContext) {
+    return currentUser;
+  }
 
-  @Field()
-  @IsNotEmpty()
-  lastName: string;
-
-  @Field()
-  @IsEmail()
-  email: string;
-
-  @Field()
-  @MinLength(6)
-  password: string;
-}
-
-@ObjectType()
-class CreateUserPayload {
-  @Field({ nullable: true })
-  user: User;
-
-  @Field({ nullable: true })
-  error: ErrorMessage;
-}
-
-@Resolver()
-export class CreateUserResolver {
   @Mutation(() => CreateUserPayload)
   async createUser(@Args() args: CreateUserArgs, @Ctx() { session }: MyContext) {
     const user = User.create({

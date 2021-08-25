@@ -14,6 +14,7 @@ import { Budget } from './Budget';
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
+  //
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   readonly id: number;

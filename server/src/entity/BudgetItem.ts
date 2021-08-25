@@ -9,12 +9,13 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ExpenseGroup } from './ExpenseGroup';
+import { BudgetGroup } from './BudgetGroup';
 import { Transaction } from './Transaction';
 
 @ObjectType()
 @Entity()
-export class Expense extends BaseEntity {
+export class BudgetItem extends BaseEntity {
+  //
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   readonly id: number;
@@ -27,10 +28,12 @@ export class Expense extends BaseEntity {
   @Column()
   plannedAmount: number; // Placeholder - TODO: decide how to handle storing currency amounts
 
-  @ManyToOne(() => ExpenseGroup, expenseGroup => expenseGroup.expenses)
-  expenseGroup: ExpenseGroup;
+  @ManyToOne(() => BudgetGroup, budgetGroup => budgetGroup.budgetItems)
+  budgetGroup: BudgetGroup;
+  @Column()
+  budgetGroupId: number;
 
-  @OneToMany(() => Transaction, transaction => transaction.expense)
+  @OneToMany(() => Transaction, transaction => transaction.budgetItem)
   transactions: Transaction[];
 
   @CreateDateColumn()

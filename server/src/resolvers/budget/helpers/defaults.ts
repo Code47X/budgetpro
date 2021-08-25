@@ -1,54 +1,49 @@
-import { Expense } from '../../../entity/Expense';
-import { ExpenseGroup } from '../../../entity/ExpenseGroup';
-import { Income } from '../../../entity/Income';
-import { IncomeGroup } from '../../../entity/IncomeGroup';
+import { BudgetGroup } from '../../../entity/BudgetGroup';
+import { BudgetItem } from '../../../entity/BudgetItem';
 
-export const defaultIncomeGroups = [
-  IncomeGroup.create({
+export const defaultBudgetGroups = [
+  BudgetGroup.create({
     label: 'Income',
-    incomes: [
-      Income.create({
+    budgetItems: [
+      BudgetItem.create({
         name: 'Paycheck 1',
         plannedAmount: 0.0,
       }),
-      Income.create({
+      BudgetItem.create({
         name: 'Paycheck 2',
         plannedAmount: 0.0,
       }),
     ],
   }),
-];
-
-export const defaultExpenseGroups = [
-  ExpenseGroup.create({
+  BudgetGroup.create({
     label: 'Housing',
-    expenses: [
-      Expense.create({
+    budgetItems: [
+      BudgetItem.create({
         name: 'Mortgage/Rent',
         plannedAmount: 0.0,
       }),
-      Expense.create({
+      BudgetItem.create({
         name: 'Electricity',
         plannedAmount: 0.0,
       }),
-      Expense.create({
+      BudgetItem.create({
         name: 'Internet',
         plannedAmount: 0.0,
       }),
-      Expense.create({
+      BudgetItem.create({
         name: 'Trash',
         plannedAmount: 0.0,
       }),
     ],
   }),
-  ExpenseGroup.create({
+  BudgetGroup.create({
     label: 'Food',
-    expenses: [
-      Expense.create({
+    budgetItems: [
+      BudgetItem.create({
         name: 'Groceries',
         plannedAmount: 0.0,
       }),
-      Expense.create({
+      BudgetItem.create({
         name: 'Restaurants',
         plannedAmount: 0.0,
       }),

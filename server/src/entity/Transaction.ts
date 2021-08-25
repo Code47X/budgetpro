@@ -6,16 +6,15 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { Budget } from './Budget';
-import { Expense } from './Expense';
-import { Income } from './Income';
+import { BudgetItem } from './BudgetItem';
 
 @ObjectType()
 @Entity()
 export class Transaction extends BaseEntity {
+  //
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   readonly id: number;
@@ -25,17 +24,10 @@ export class Transaction extends BaseEntity {
   @Column()
   budgetId: number;
 
-  @ManyToOne(() => Income, income => income.transactions)
-  income: Income;
-  @Field(() => ID, { nullable: true })
-  @RelationId((transaction: Transaction) => transaction.income)
-  incomeId: number;
-
-  @ManyToOne(() => Expense, expense => expense.transactions)
-  expense: Expense;
-  @Field(() => ID, { nullable: true })
-  @RelationId((transaction: Transaction) => transaction.expense)
-  expenseId: number;
+  @ManyToOne(() => BudgetItem, budgetItem => budgetItem.transactions)
+  budgetItem: BudgetItem;
+  @Column()
+  budgetItemId: number;
 
   @Field()
   @Column()
