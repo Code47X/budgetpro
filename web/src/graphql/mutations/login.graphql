@@ -6,8 +6,7 @@ mutation Login($input: LoginInput!) {
       lastName
       email
     }
-    fieldError {
-      field
+    error {
       message
     }
   }

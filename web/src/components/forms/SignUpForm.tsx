@@ -85,7 +85,7 @@ const SignUpForm: React.FC = () => {
     if (data?.createUser.user) {
       router.push('/');
     }
-    if (data?.createUser.fieldError) {
+    if (data?.createUser.error) {
       emailsInUse.push(castValues.email.toLowerCase());
       helpers.validateField('email');
     }

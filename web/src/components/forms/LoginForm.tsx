@@ -67,8 +67,8 @@ const LoginForm: React.FC = () => {
     if (data?.login.user) {
       router.push('/');
     }
-    if (data?.login.fieldError) {
-      helpers.setFieldError(data.login.fieldError.field, data.login.fieldError.message);
+    if (data?.login.error) {
+      helpers.setFieldError('password', data.login.error.message);
     }
   };
 

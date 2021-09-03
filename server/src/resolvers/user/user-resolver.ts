@@ -1,8 +1,8 @@
 import argon2 from 'argon2';
-import { Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { User } from '../../entity/User';
 import { MyContext } from '../../types';
-import { CreateUserArgs } from './_inputs';
+import { CreateUserInput } from './_inputs';
 import { CreateUserPayload } from './_payloads';
 
 @Resolver(() => User)
@@ -14,12 +14,12 @@ export class UserResolver {
   }
 
   @Mutation(() => CreateUserPayload)
-  async createUser(@Args() args: CreateUserArgs, @Ctx() { session }: MyContext) {
+  async createUser(@Arg('input') input: CreateUserInput, @Ctx() { session }: MyContext) {
     const user = User.create({
-      firstName: args.firstName,
-      lastName: args.lastName,
-      email: args.email.toLowerCase(),
-      password: await argon2.hash(args.password),
+      firstName: input.firstName,
+      lastName: input.lastName,
+      email: input.email.toLowerCase(),
+      password: await argon2.hash(input.password),
     });
 
     return user

@@ -12,8 +12,45 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
-  DateTime: any;
+};
+
+export type Budget = {
+  __typename?: 'Budget';
+  id: Scalars['ID'];
+  month: Scalars['Int'];
+  year: Scalars['Int'];
+  budgetGroups: Array<BudgetGroup>;
+  transactions: Array<Transaction>;
+};
+
+export type BudgetDateInput = {
+  month: Scalars['Int'];
+  year: Scalars['Int'];
+};
+
+export type BudgetGroup = {
+  __typename?: 'BudgetGroup';
+  id: Scalars['ID'];
+  label: Scalars['String'];
+  budgetItems: Array<BudgetItem>;
+};
+
+export type BudgetGroupInput = {
+  id: Scalars['Float'];
+  label: Scalars['String'];
+};
+
+export type BudgetItem = {
+  __typename?: 'BudgetItem';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  plannedAmount: Scalars['Float'];
+};
+
+export type CreateBudgetPayload = {
+  __typename?: 'CreateBudgetPayload';
+  budget?: Maybe<Budget>;
+  error?: Maybe<ErrorMessage>;
 };
 
 export type CreateUserInput = {
@@ -26,13 +63,12 @@ export type CreateUserInput = {
 export type CreateUserPayload = {
   __typename?: 'CreateUserPayload';
   user?: Maybe<User>;
-  fieldError?: Maybe<FieldError>;
+  error?: Maybe<ErrorMessage>;
 };
 
-
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
+export type ErrorMessage = {
+  __typename?: 'ErrorMessage';
+  field?: Maybe<Scalars['String']>;
   message: Scalars['String'];
 };
 
@@ -44,18 +80,15 @@ export type LoginInput = {
 export type LoginPayload = {
   __typename?: 'LoginPayload';
   user?: Maybe<User>;
-  fieldError?: Maybe<FieldError>;
+  error?: Maybe<ErrorMessage>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser: CreateUserPayload;
   login: LoginPayload;
-};
-
-
-export type MutationCreateUserArgs = {
-  input: CreateUserInput;
+  createBudget: CreateBudgetPayload;
+  updateBudget?: Maybe<Budget>;
+  createUser: CreateUserPayload;
 };
 
 
@@ -63,9 +96,37 @@ export type MutationLoginArgs = {
   input: LoginInput;
 };
 
+
+export type MutationCreateBudgetArgs = {
+  input: BudgetDateInput;
+};
+
+
+export type MutationUpdateBudgetArgs = {
+  id: Scalars['Float'];
+  budgetGroups: Array<BudgetGroupInput>;
+};
+
+
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
+};
+
 export type Query = {
   __typename?: 'Query';
+  budget?: Maybe<Budget>;
   me?: Maybe<User>;
+};
+
+
+export type QueryBudgetArgs = {
+  input: BudgetDateInput;
+};
+
+export type Transaction = {
+  __typename?: 'Transaction';
+  id: Scalars['ID'];
+  amount: Scalars['Float'];
 };
 
 export type User = {
@@ -74,8 +135,6 @@ export type User = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -90,9 +149,9 @@ export type CreateUserMutation = (
     & { user?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'firstName' | 'lastName' | 'email'>
-    )>, fieldError?: Maybe<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
+    )>, error?: Maybe<(
+      { __typename?: 'ErrorMessage' }
+      & Pick<ErrorMessage, 'message'>
     )> }
   ) }
 );
@@ -109,9 +168,9 @@ export type LoginMutation = (
     & { user?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'firstName' | 'lastName' | 'email'>
-    )>, fieldError?: Maybe<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
+    )>, error?: Maybe<(
+      { __typename?: 'ErrorMessage' }
+      & Pick<ErrorMessage, 'message'>
     )> }
   ) }
 );
@@ -137,8 +196,7 @@ export const CreateUserDocument = gql`
       lastName
       email
     }
-    fieldError {
-      field
+    error {
       message
     }
   }
@@ -179,8 +237,7 @@ export const LoginDocument = gql`
       lastName
       email
     }
-    fieldError {
-      field
+    error {
       message
     }
   }

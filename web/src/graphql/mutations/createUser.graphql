@@ -6,8 +6,7 @@ mutation CreateUser($input: CreateUserInput!) {
       lastName
       email
     }
-    fieldError {
-      field
+    error {
       message
     }
   }

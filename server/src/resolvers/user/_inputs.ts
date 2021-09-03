@@ -1,8 +1,8 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { ArgsType, Field } from 'type-graphql';
+import { Field, InputType } from 'type-graphql';
 
-@ArgsType()
-export class CreateUserArgs {
+@InputType()
+export class CreateUserInput {
   @Field()
   @IsNotEmpty()
   firstName: string;

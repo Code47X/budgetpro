@@ -1,9 +1,9 @@
-import { Args, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Args, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { CurrentUser } from '../../decorators/CurrentUser';
 import { Budget } from '../../entity/Budget';
 import { User } from '../../entity/User';
 import { defaultBudgetGroups } from './helpers/defaults';
-import { BudgetArgs, CreateBudgetArgs, UpdateBudgetArgs } from './_inputs';
+import { BudgetDateInput, UpdateBudgetArgs } from './_inputs';
 import { CreateBudgetPayload } from './_payloads';
 
 @Resolver(() => Budget)
@@ -11,7 +11,7 @@ export class BudgetResolver {
   //
   @Authorized()
   @Query(() => Budget, { nullable: true })
-  async budget(@Args() { month, year }: BudgetArgs, @CurrentUser() user: User) {
+  async budget(@Arg('input') { month, year }: BudgetDateInput, @CurrentUser() user: User) {
     return await Budget.findOne({
       user,
       month,
@@ -21,7 +21,7 @@ export class BudgetResolver {
 
   @Authorized()
   @Mutation(() => CreateBudgetPayload)
-  async createBudget(@Args() { month, year }: CreateBudgetArgs, @CurrentUser() user: User) {
+  async createBudget(@Arg('input') { month, year }: BudgetDateInput, @CurrentUser() user: User) {
     const budget = await Budget.create({
       user,
       month,
