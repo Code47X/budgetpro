@@ -3,6 +3,7 @@ import { BudgetItem } from '../../../entity/BudgetItem';
 
 export const defaultBudgetGroups = [
   BudgetGroup.create({
+    type: 'Income',
     label: 'Income',
     budgetItems: [
       BudgetItem.create({
@@ -16,6 +17,7 @@ export const defaultBudgetGroups = [
     ],
   }),
   BudgetGroup.create({
+    type: 'Expense',
     label: 'Housing',
     budgetItems: [
       BudgetItem.create({
@@ -37,6 +39,7 @@ export const defaultBudgetGroups = [
     ],
   }),
   BudgetGroup.create({
+    type: 'Expense',
     label: 'Food',
     budgetItems: [
       BudgetItem.create({

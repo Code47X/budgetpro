@@ -1,10 +1,10 @@
-import { Box, Card, List, ListItem, ListItemText, makeStyles } from '@material-ui/core';
+import { Card, List, ListItem, ListItemText, makeStyles } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Link from 'next/link';
 import React from 'react';
 import { UserCard } from '../components/UI/UserCard';
-import { ClientSideOnly } from '../components/utils/ClientSideOnly';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 import { withApollo } from '../utils/withApollo';
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -23,8 +23,19 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
+const PAGE_LINKS = [
+  { href: '/login', text: 'Login' },
+  { href: '/signup', text: 'Sign Up' },
+];
+
+const AUTH_LINKS = [
+  { href: '/my/budget', text: 'My Budget' },
+  //
+];
+
 const IndexPage: React.FC = () => {
   const classes = useStyles();
+  const { currentUser } = useCurrentUser();
 
   return (
     <>
@@ -34,28 +45,28 @@ const IndexPage: React.FC = () => {
         </Typography>
         <Card className={classes.linksCard}>
           <List>
-            <Link href="/login">
-              <ListItem className={classes.listItem} button>
-                <ListItemText primary="Login" />
-              </ListItem>
-            </Link>
-            <Link href="/signup">
-              <ListItem className={classes.listItem} button>
-                <ListItemText primary="Sign Up" />
-              </ListItem>
-            </Link>
+            {PAGE_LINKS.map((link, i) => (
+              <Link key={i} href={link.href}>
+                <ListItem className={classes.listItem} button>
+                  <ListItemText primary={link.text} />
+                </ListItem>
+              </Link>
+            ))}
+
+            {/* Authorized Pages */}
+            {currentUser &&
+              AUTH_LINKS.map((link, i) => (
+                <Link key={i} href={link.href}>
+                  <ListItem className={classes.listItem} button>
+                    <ListItemText primary={link.text} />
+                  </ListItem>
+                </Link>
+              ))}
           </List>
         </Card>
       </Container>
 
-      <ClientSideOnly>
-        <Box position="absolute" bottom={20} left={20}>
-          <Typography variant="body1" gutterBottom>
-            Logged in as:
-          </Typography>
-          <UserCard />
-        </Box>
-      </ClientSideOnly>
+      <UserCard />
     </>
   );
 };

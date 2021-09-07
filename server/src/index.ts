@@ -7,6 +7,7 @@ import redis from 'redis';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
+import { COOKIE_NAME } from './constants';
 import { User } from './entity/User';
 import { authChecker } from './utils/authChecker';
 
@@ -28,7 +29,7 @@ const main = async () => {
 
   app.use(
     session({
-      name: 'qid',
+      name: COOKIE_NAME,
       store: new RedisStore({ client: redisClient, disableTouch: true }),
       saveUninitialized: false,
       secret: 'keyboard cat',
@@ -53,7 +54,7 @@ const main = async () => {
       req,
       res,
       session: req.session,
-      currentUser: await User.findOne(req.session.userId),
+      currentUser: await User.findOne({ where: { id: req.session.userId } }),
     }),
   });
 

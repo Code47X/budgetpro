@@ -1,0 +1,17 @@
+query Budget($input: BudgetDateInput!) {
+  budget(input: $input) {
+    id
+    month
+    year
+    budgetGroups {
+      id
+      type
+      label
+      budgetItems {
+        id
+        name
+        plannedAmount
+      }
+    }
+  }
+}

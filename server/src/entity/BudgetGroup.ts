@@ -12,6 +12,8 @@ import {
 import { Budget } from './Budget';
 import { BudgetItem } from './BudgetItem';
 
+export type BudgetGroupType = 'Income' | 'Expense';
+
 @ObjectType()
 @Entity()
 export class BudgetGroup extends BaseEntity {
@@ -35,6 +37,10 @@ export class BudgetGroup extends BaseEntity {
     cascade: ['insert', 'update'],
   })
   budgetItems: BudgetItem[];
+
+  @Field()
+  @Column({ type: 'enum', enum: ['Income', 'Expense'], default: 'Expense' })
+  type: BudgetGroupType;
 
   @CreateDateColumn()
   createdAt: Date;
