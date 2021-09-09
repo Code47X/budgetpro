@@ -9,10 +9,12 @@ export const defaultBudgetGroups = [
       BudgetItem.create({
         name: 'Paycheck 1',
         plannedAmount: 0.0,
+        position: 0,
       }),
       BudgetItem.create({
         name: 'Paycheck 2',
         plannedAmount: 0.0,
+        position: 1,
       }),
     ],
   }),
@@ -23,18 +25,22 @@ export const defaultBudgetGroups = [
       BudgetItem.create({
         name: 'Mortgage/Rent',
         plannedAmount: 0.0,
+        position: 0,
       }),
       BudgetItem.create({
         name: 'Electricity',
         plannedAmount: 0.0,
+        position: 1,
       }),
       BudgetItem.create({
         name: 'Internet',
         plannedAmount: 0.0,
+        position: 2,
       }),
       BudgetItem.create({
         name: 'Trash',
         plannedAmount: 0.0,
+        position: 3,
       }),
     ],
   }),
@@ -45,10 +51,12 @@ export const defaultBudgetGroups = [
       BudgetItem.create({
         name: 'Groceries',
         plannedAmount: 0.0,
+        position: 0,
       }),
       BudgetItem.create({
         name: 'Restaurants',
         plannedAmount: 0.0,
+        position: 1,
       }),
     ],
   }),

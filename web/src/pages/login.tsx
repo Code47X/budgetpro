@@ -6,13 +6,10 @@ import { withApollo } from '../utils/withApollo';
 
 const LoginPage: React.FC = () => {
   return (
-    <>
-      <Container component="main" maxWidth="xs">
-        <LoginForm />
-      </Container>
-
+    <Container component="main" maxWidth="xs">
+      <LoginForm />
       <UserCard />
-    </>
+    </Container>
   );
 };
 

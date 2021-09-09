@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHasMounted } from '../../hooks/useHasMounted';
+import { useHasMounted } from '../hooks/useHasMounted';
 
 export const ClientSideOnly: React.FC = ({ children }) => {
   const hasMounted = useHasMounted();

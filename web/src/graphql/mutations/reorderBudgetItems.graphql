@@ -1,0 +1,13 @@
+mutation ReorderBudgetItems($input: ReorderBudgetItemsInput!) {
+  reorderBudgetItems(input: $input) {
+    id
+    type
+    label
+    budgetItems {
+      id
+      name
+      position
+      plannedAmount
+    }
+  }
+}

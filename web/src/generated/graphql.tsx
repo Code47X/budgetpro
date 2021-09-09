@@ -46,6 +46,11 @@ export type BudgetItem = {
   id: Scalars['ID'];
   name: Scalars['String'];
   plannedAmount: Scalars['Float'];
+  position: Scalars['Int'];
+};
+
+export type BudgetItemInput = {
+  id: Scalars['Float'];
 };
 
 export type CreateBudgetPayload = {
@@ -90,6 +95,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   createBudget: CreateBudgetPayload;
   updateBudget?: Maybe<Budget>;
+  reorderBudgetItems?: Maybe<BudgetGroup>;
   createUser: CreateUserPayload;
 };
 
@@ -110,6 +116,11 @@ export type MutationUpdateBudgetArgs = {
 };
 
 
+export type MutationReorderBudgetItemsArgs = {
+  input: ReorderBudgetItemsInput;
+};
+
+
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
 };
@@ -123,6 +134,11 @@ export type Query = {
 
 export type QueryBudgetArgs = {
   input: BudgetDateInput;
+};
+
+export type ReorderBudgetItemsInput = {
+  id: Scalars['Float'];
+  budgetItems: Array<BudgetItemInput>;
 };
 
 export type Transaction = {
@@ -185,6 +201,23 @@ export type LogoutMutation = (
   & Pick<Mutation, 'logout'>
 );
 
+export type ReorderBudgetItemsMutationVariables = Exact<{
+  input: ReorderBudgetItemsInput;
+}>;
+
+
+export type ReorderBudgetItemsMutation = (
+  { __typename?: 'Mutation' }
+  & { reorderBudgetItems?: Maybe<(
+    { __typename?: 'BudgetGroup' }
+    & Pick<BudgetGroup, 'id' | 'type' | 'label'>
+    & { budgetItems: Array<(
+      { __typename?: 'BudgetItem' }
+      & Pick<BudgetItem, 'id' | 'name' | 'position' | 'plannedAmount'>
+    )> }
+  )> }
+);
+
 export type BudgetQueryVariables = Exact<{
   input: BudgetDateInput;
 }>;
@@ -200,7 +233,7 @@ export type BudgetQuery = (
       & Pick<BudgetGroup, 'id' | 'type' | 'label'>
       & { budgetItems: Array<(
         { __typename?: 'BudgetItem' }
-        & Pick<BudgetItem, 'id' | 'name' | 'plannedAmount'>
+        & Pick<BudgetItem, 'id' | 'name' | 'position' | 'plannedAmount'>
       )> }
     )> }
   )> }
@@ -330,6 +363,47 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const ReorderBudgetItemsDocument = gql`
+    mutation ReorderBudgetItems($input: ReorderBudgetItemsInput!) {
+  reorderBudgetItems(input: $input) {
+    id
+    type
+    label
+    budgetItems {
+      id
+      name
+      position
+      plannedAmount
+    }
+  }
+}
+    `;
+export type ReorderBudgetItemsMutationFn = Apollo.MutationFunction<ReorderBudgetItemsMutation, ReorderBudgetItemsMutationVariables>;
+
+/**
+ * __useReorderBudgetItemsMutation__
+ *
+ * To run a mutation, you first call `useReorderBudgetItemsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReorderBudgetItemsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [reorderBudgetItemsMutation, { data, loading, error }] = useReorderBudgetItemsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useReorderBudgetItemsMutation(baseOptions?: Apollo.MutationHookOptions<ReorderBudgetItemsMutation, ReorderBudgetItemsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReorderBudgetItemsMutation, ReorderBudgetItemsMutationVariables>(ReorderBudgetItemsDocument, options);
+      }
+export type ReorderBudgetItemsMutationHookResult = ReturnType<typeof useReorderBudgetItemsMutation>;
+export type ReorderBudgetItemsMutationResult = Apollo.MutationResult<ReorderBudgetItemsMutation>;
+export type ReorderBudgetItemsMutationOptions = Apollo.BaseMutationOptions<ReorderBudgetItemsMutation, ReorderBudgetItemsMutationVariables>;
 export const BudgetDocument = gql`
     query Budget($input: BudgetDateInput!) {
   budget(input: $input) {
@@ -343,6 +417,7 @@ export const BudgetDocument = gql`
       budgetItems {
         id
         name
+        position
         plannedAmount
       }
     }

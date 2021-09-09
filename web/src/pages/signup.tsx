@@ -6,13 +6,10 @@ import { withApollo } from '../utils/withApollo';
 
 const SignUpPage: React.FC = () => {
   return (
-    <>
-      <Container component="main" maxWidth="xs">
-        <SignUpForm />
-      </Container>
-
+    <Container component="main" maxWidth="xs">
+      <SignUpForm />
       <UserCard />
-    </>
+    </Container>
   );
 };
 

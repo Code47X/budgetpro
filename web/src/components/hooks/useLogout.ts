@@ -1,6 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { useLogoutMutation } from '../generated/graphql';
+import { useLogoutMutation } from '../../generated/graphql';
 
 export function useLogout() {
   const apollo = useApolloClient();

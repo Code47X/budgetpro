@@ -10,6 +10,7 @@ query Budget($input: BudgetDateInput!) {
       budgetItems {
         id
         name
+        position
         plannedAmount
       }
     }

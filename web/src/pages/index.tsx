@@ -3,8 +3,8 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Link from 'next/link';
 import React from 'react';
+import { useCurrentUser } from '../components/hooks/useCurrentUser';
 import { UserCard } from '../components/UI/UserCard';
-import { useCurrentUser } from '../hooks/useCurrentUser';
 import { withApollo } from '../utils/withApollo';
 
 const useStyles = makeStyles(({ spacing }) => ({

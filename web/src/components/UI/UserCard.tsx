@@ -3,8 +3,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { User } from '../../generated/graphql';
-import { useCurrentUser } from '../../hooks/useCurrentUser';
-import { useLogout } from '../../hooks/useLogout';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import { useLogout } from '../hooks/useLogout';
 
 const useStyles = makeStyles(() => ({
   card: {
