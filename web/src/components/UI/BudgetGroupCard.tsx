@@ -1,79 +1,83 @@
-import { Box, Divider, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Card, CardContent, Divider, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { BudgetGroup, BudgetItem, useReorderBudgetItemsMutation } from '../../generated/graphql';
 
-const useStyles = makeStyles(({ spacing }) => ({
-  root: {
-    margin: spacing(4, 0, 0, 0),
-    padding: spacing(2),
-  },
-}));
+interface HeaderRowProps {
+  budgetGroup: BudgetGroup;
+}
 
-const HeaderRow = ({ budgetGroup }: { budgetGroup: BudgetGroup }) => (
-  <Grid container>
-    <Grid item xs={6}>
-      <Typography variant="h6">{budgetGroup.label}</Typography>
-    </Grid>
-    <Grid item xs={3}>
-      <Typography variant="h6" align="right">
-        Planned
-      </Typography>
-    </Grid>
-    <Grid item xs={3}>
-      <Typography variant="h6" align="right">
-        Actual
-      </Typography>
-    </Grid>
-  </Grid>
-);
-
-const BudgetItemRow = ({ budgetItem, idx }: { budgetItem: BudgetItem; idx: number }) => (
-  <Draggable draggableId={budgetItem.id} index={idx}>
-    {provided => (
-      <Grid
-        container
-        innerRef={provided.innerRef}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-      >
-        <Grid item xs={6}>
-          <Typography variant="body1">{budgetItem.name}</Typography>
-        </Grid>
-        <Grid item xs={3}>
-          <Typography variant="body1" align="right">
-            {budgetItem.plannedAmount}
-          </Typography>
-        </Grid>
-        <Grid item xs={3}>
-          <Typography variant="body1" align="right">
-            $0.00
-          </Typography>
-        </Grid>
+function HeaderRow({ budgetGroup }: HeaderRowProps) {
+  return (
+    <Grid container>
+      <Grid item xs={6}>
+        <Typography variant="h6">{budgetGroup.label}</Typography>
       </Grid>
-    )}
-  </Draggable>
-);
+      <Grid item xs={3}>
+        <Typography variant="h6" align="right">
+          Planned
+        </Typography>
+      </Grid>
+      <Grid item xs={3}>
+        <Typography variant="h6" align="right">
+          Actual
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+}
+
+interface BudgetItemRowProps {
+  budgetItem: BudgetItem;
+  idx: number;
+}
+
+function BudgetItemRow({ budgetItem, idx }: BudgetItemRowProps) {
+  return (
+    <Draggable draggableId={budgetItem.id} index={idx}>
+      {provided => (
+        <Grid
+          container
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <Grid item xs={6}>
+            <Typography variant="body1">{budgetItem.name}</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <Typography variant="body1" align="right">
+              {budgetItem.plannedAmount}
+            </Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <Typography variant="body1" align="right">
+              $0.00
+            </Typography>
+          </Grid>
+        </Grid>
+      )}
+    </Draggable>
+  );
+}
 
 interface BudgetGroupCardProps {
   budgetGroup: BudgetGroup;
 }
 
-export const BudgetGroupCard: React.FC<BudgetGroupCardProps> = ({ budgetGroup }) => {
-  const classes = useStyles();
+export function BudgetGroupCard({ budgetGroup }: BudgetGroupCardProps) {
   const [reorderBudgetItems] = useReorderBudgetItemsMutation();
 
   const handleReorder = (srcIndex: number, destIndex: number) => {
-    const tempBudgetItems = [...budgetGroup.budgetItems];
-    const [budgetItem] = tempBudgetItems.splice(srcIndex, 1);
-    tempBudgetItems.splice(destIndex, 0, budgetItem);
+    const newArr = [...budgetGroup.budgetItems];
+    newArr.splice(destIndex, 0, newArr.splice(srcIndex, 1)[0]);
 
-    return tempBudgetItems.map((item, idx) => {
+    return newArr.map((item, idx) => {
       return {
         ...item,
         position: idx,
       };
-    });
+    }) as BudgetItem[];
   };
 
   const onDragEnd = async ({ destination, source }: DropResult) => {
@@ -103,22 +107,22 @@ export const BudgetGroupCard: React.FC<BudgetGroupCardProps> = ({ budgetGroup })
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Paper className={classes.root}>
-        <Box display="flex" flexDirection="column">
+      <Card>
+        <CardContent>
           <HeaderRow budgetGroup={budgetGroup} />
           <Divider />
           <Droppable droppableId={budgetGroup.id}>
             {provided => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
+              <Stack ref={provided.innerRef} {...provided.droppableProps}>
                 {budgetGroup.budgetItems.map((budgetItem, idx) => (
                   <BudgetItemRow key={budgetItem.id} budgetItem={budgetItem} idx={idx} />
                 ))}
                 {provided.placeholder}
-              </div>
+              </Stack>
             )}
           </Droppable>
-        </Box>
-      </Paper>
+        </CardContent>
+      </Card>
     </DragDropContext>
   );
-};
+}

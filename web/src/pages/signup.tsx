@@ -1,16 +1,14 @@
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import React from 'react';
 import SignUpForm from '../components/forms/SignUpForm';
-import { UserCard } from '../components/UI/UserCard';
 import { withApollo } from '../utils/withApollo';
 
-const SignUpPage: React.FC = () => {
+function SignUpPage() {
   return (
     <Container component="main" maxWidth="xs">
       <SignUpForm />
-      <UserCard />
     </Container>
   );
-};
+}
 
 export default withApollo()(SignUpPage);

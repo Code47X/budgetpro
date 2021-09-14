@@ -1,23 +1,21 @@
-import { Avatar, Box, Card, CardHeader, Link, makeStyles, Typography } from '@material-ui/core';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import { Avatar, Box, Card, CardHeader, LinearProgress, Link, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { User } from '../../generated/graphql';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useLogout } from '../hooks/useLogout';
 
-const useStyles = makeStyles(() => ({
+const sx = {
   card: {
     minWidth: 275,
   },
-}));
+} as const;
 
 const getInitials = (user: User) => {
   return user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase();
 };
 
-export const UserCard: React.FC = () => {
-  const classes = useStyles();
+export function UserCard() {
   const router = useRouter();
   const logout = useLogout();
 
@@ -43,7 +41,7 @@ export const UserCard: React.FC = () => {
         </Typography>
       </Box>
 
-      <Card className={classes.card}>
+      <Card sx={sx.card}>
         <CardHeader
           avatar={<Avatar>{cardContent.initials}</Avatar>}
           title={loading ? <LinearProgress /> : cardContent.title}
@@ -52,4 +50,4 @@ export const UserCard: React.FC = () => {
       </Card>
     </Box>
   );
-};
+}

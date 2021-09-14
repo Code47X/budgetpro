@@ -1,11 +1,9 @@
-import { Grid } from '@material-ui/core';
+import { Stack } from '@mui/material';
 import React, { useState } from 'react';
 import { useBudgetQuery } from '../../generated/graphql';
 import { BudgetGroupCard } from '../UI/BudgetGroupCard';
 
-interface BudgetSheetProps {}
-
-export const BudgetSheet: React.FC<BudgetSheetProps> = () => {
+function BudgetSheet() {
   const [budgetDate, _setBudgetDate] = useState<Date>(new Date());
 
   const { data } = useBudgetQuery({
@@ -26,15 +24,15 @@ export const BudgetSheet: React.FC<BudgetSheetProps> = () => {
   );
 
   return (
-    <>
-      <Grid container direction="column">
-        {incomeGroups?.map(incomeGroup => (
-          <BudgetGroupCard key={incomeGroup.id} budgetGroup={incomeGroup} />
-        ))}
-        {expenseGroups?.map(expenseGroup => (
-          <BudgetGroupCard key={expenseGroup.id} budgetGroup={expenseGroup} />
-        ))}
-      </Grid>
-    </>
+    <Stack spacing={4}>
+      {incomeGroups?.map(incomeGroup => (
+        <BudgetGroupCard key={incomeGroup.id} budgetGroup={incomeGroup} />
+      ))}
+      {expenseGroups?.map(expenseGroup => (
+        <BudgetGroupCard key={expenseGroup.id} budgetGroup={expenseGroup} />
+      ))}
+    </Stack>
   );
-};
+}
+
+export default BudgetSheet;

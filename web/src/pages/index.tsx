@@ -1,74 +1,44 @@
-import { Card, List, ListItem, ListItemText, makeStyles } from '@material-ui/core';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
-import Link from 'next/link';
+import { Container, List, ListItemButton, ListItemText, Paper, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { useCurrentUser } from '../components/hooks/useCurrentUser';
 import { UserCard } from '../components/UI/UserCard';
 import { withApollo } from '../utils/withApollo';
 
-const useStyles = makeStyles(({ spacing }) => ({
-  container: {
-    marginTop: spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  linksCard: {
-    width: '100%',
-    marginTop: spacing(3),
-  },
-  listItem: {
-    textAlign: 'center',
-  },
-}));
-
 const PAGE_LINKS = [
-  { href: '/login', text: 'Login' },
-  { href: '/signup', text: 'Sign Up' },
+  { href: '/login', text: 'Login', auth: false },
+  { href: '/signup', text: 'Sign Up', auth: false },
+  { href: '/my/budget', text: 'My Budget', auth: true },
 ];
 
-const AUTH_LINKS = [
-  { href: '/my/budget', text: 'My Budget' },
-  //
-];
-
-const IndexPage: React.FC = () => {
-  const classes = useStyles();
+function IndexPage() {
   const { currentUser } = useCurrentUser();
+  const router = useRouter();
+  const pageLinks = currentUser ? PAGE_LINKS : PAGE_LINKS.filter(link => link.auth == false);
 
   return (
     <>
-      <Container component="main" maxWidth="xs" className={classes.container}>
-        <Typography component="h1" variant="h5">
+      <Container component="main" maxWidth="xs">
+        <Typography variant="h5" textAlign="center" my={4}>
           BudgetPro
         </Typography>
-        <Card className={classes.linksCard}>
-          <List>
-            {PAGE_LINKS.map((link, i) => (
-              <Link key={i} href={link.href}>
-                <ListItem className={classes.listItem} button>
-                  <ListItemText primary={link.text} />
-                </ListItem>
-              </Link>
+        <Paper>
+          <List component="nav">
+            {pageLinks.map((link, i) => (
+              <ListItemButton key={i} onClick={() => router.push(link.href)}>
+                <ListItemText
+                  primary={link.text}
+                  primaryTypographyProps={{ textAlign: 'center' }}
+                />
+              </ListItemButton>
             ))}
-
-            {/* Authorized Pages */}
-            {currentUser &&
-              AUTH_LINKS.map((link, i) => (
-                <Link key={i} href={link.href}>
-                  <ListItem className={classes.listItem} button>
-                    <ListItemText primary={link.text} />
-                  </ListItem>
-                </Link>
-              ))}
           </List>
-        </Card>
+        </Paper>
       </Container>
 
       <UserCard />
     </>
   );
-};
+}
 
 export default withApollo({ ssr: true })(IndexPage);

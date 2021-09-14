@@ -1,34 +1,29 @@
-import { Avatar, Button, Fade, Grid, LinearProgress, Typography } from '@material-ui/core';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { ApolloCache } from '@apollo/client';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
 import * as Yup from 'yup';
-import { MeDocument, MeQuery, useCreateUserMutation } from '../../generated/graphql';
+import { MeDocument, MeQuery, useCreateUserMutation, User } from '../../generated/graphql';
 import { FormikTextField } from '../inputs/FormikTextField';
 
-const useStyles = makeStyles(({ spacing, palette }: Theme) => ({
+const sx = {
   container: {
-    marginTop: spacing(8),
+    marginTop: 8,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
   avatar: {
-    margin: spacing(1),
-    backgroundColor: palette.primary.main,
+    bgcolor: 'primary.main',
   },
-  form: {
-    width: '100%',
-    marginTop: spacing(3),
+  header: {
+    my: 2,
   },
-  submitBtn: {
-    margin: spacing(1, 0, 1),
-  },
-}));
+} as const;
 
-interface SignUpFormValues {
+interface FormValues {
   firstName: string;
   lastName: string;
   email: string;
@@ -39,8 +34,7 @@ interface SignUpFormValues {
 // when server responds with "email already in use"
 const emailsInUse: string[] = [];
 
-// Form Validation
-const signupSchema = Yup.object({
+const formSchema = Yup.object({
   firstName: Yup.string().default('').trim().max(30, 'Too long').required('Required'),
   lastName: Yup.string().default('').trim().max(30, 'Too long').required('Required'),
   email: Yup.string()
@@ -54,32 +48,30 @@ const signupSchema = Yup.object({
   password: Yup.string().default('').min(6, 'Must be at least 6 characters').required('Required'),
 });
 
-const SignUpForm: React.FC = () => {
-  const classes = useStyles();
+function SignUpForm() {
   const router = useRouter();
   const [createUser] = useCreateUserMutation();
-  const initialValues: SignUpFormValues = signupSchema.cast({});
+  const initialValues = formSchema.cast({}) as FormValues;
 
-  const handleSubmit = async (
-    values: SignUpFormValues,
-    helpers: FormikHelpers<SignUpFormValues>
-  ) => {
-    const castValues = signupSchema.cast(values);
+  const updateCache = (cache: ApolloCache<any>, user?: User | null) => {
+    if (user) {
+      cache.writeQuery<MeQuery>({
+        query: MeDocument,
+        data: {
+          __typename: 'Query',
+          me: user,
+        },
+      });
+    }
+  };
+
+  const handleSubmit = async (values: FormValues, helpers: FormikHelpers<FormValues>) => {
+    const castValues = formSchema.cast(values);
     helpers.setValues(castValues);
 
     const { data } = await createUser({
       variables: { input: castValues },
-      update: (cache, { data }) => {
-        if (data?.createUser.user) {
-          cache.writeQuery<MeQuery>({
-            query: MeDocument,
-            data: {
-              __typename: 'Query',
-              me: data?.createUser.user,
-            },
-          });
-        }
-      },
+      update: (cache, { data }) => updateCache(cache, data?.createUser.user),
     });
 
     if (data?.createUser.user) {
@@ -92,16 +84,16 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={signupSchema}>
-      {({ isSubmitting, isValid, submitCount }) => (
-        <div className={classes.container}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <Form className={classes.form}>
+    <Box sx={sx.container}>
+      <Avatar sx={sx.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5" sx={sx.header}>
+        Sign up
+      </Typography>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={formSchema}>
+        {({ isSubmitting, isValid, submitCount }) => (
+          <Form>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <FormikTextField name="firstName" trimOnBlur fullWidth />
@@ -121,23 +113,17 @@ const SignUpForm: React.FC = () => {
                   color="primary"
                   variant="contained"
                   disabled={isSubmitting || (submitCount > 0 && !isValid)}
-                  className={classes.submitBtn}
                   fullWidth
                 >
                   Create Account
                 </Button>
               </Grid>
-              <Grid item xs={12}>
-                <Fade in={isSubmitting} timeout={500}>
-                  <LinearProgress color="primary" />
-                </Fade>
-              </Grid>
             </Grid>
           </Form>
-        </div>
-      )}
-    </Formik>
+        )}
+      </Formik>
+    </Box>
   );
-};
+}
 
 export default SignUpForm;

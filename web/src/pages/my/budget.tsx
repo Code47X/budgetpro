@@ -1,6 +1,6 @@
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import React from 'react';
-import { BudgetSheet } from '../../components/containers/BudgetSheet';
+import BudgetSheet from '../../components/containers/BudgetSheet';
 import { UserCard } from '../../components/UI/UserCard';
 import { AuthenticatedPage } from '../../components/utils/AuthenticatedPage';
 import { withApollo } from '../../utils/withApollo';
