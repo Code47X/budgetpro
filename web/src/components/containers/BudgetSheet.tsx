@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import React, { useState } from 'react';
 import { useBudgetQuery } from '../../generated/graphql';
-import { BudgetGroupCard } from '../UI/BudgetGroupCard';
+import { BudgetGroupCard } from './BudgetGroupCard';
 
 function BudgetSheet() {
   const [budgetDate, _setBudgetDate] = useState<Date>(new Date());

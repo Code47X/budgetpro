@@ -10,6 +10,9 @@ const theme = createTheme({
       default: '#101010',
     },
   },
+  shape: {
+    borderRadius: 12,
+  },
 });
 
 export default theme;

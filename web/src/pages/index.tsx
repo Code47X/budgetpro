@@ -1,8 +1,8 @@
 import { Container, List, ListItemButton, ListItemText, Paper, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { UserCard } from '../components/containers/UserCard';
 import { useCurrentUser } from '../components/hooks/useCurrentUser';
-import { UserCard } from '../components/UI/UserCard';
 import { withApollo } from '../utils/withApollo';
 
 const PAGE_LINKS = [

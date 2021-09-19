@@ -1,56 +1,27 @@
-import { ApolloCache } from '@apollo/client';
+import { ApolloCache } from '@apollo/client/cache';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
+import { Avatar, Button, Grid, Paper, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
 import * as Yup from 'yup';
-import { MeDocument, MeQuery, useCreateUserMutation, User } from '../../generated/graphql';
-import { FormikTextField } from '../inputs/FormikTextField';
-
-const sx = {
-  container: {
-    marginTop: 8,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    bgcolor: 'primary.main',
-  },
-  header: {
-    my: 2,
-  },
-} as const;
+import { MeDocument, MeQuery, useLoginMutation, User } from '../../../generated/graphql';
+import { FormikTextField } from '../../UI/TextField';
+import { sx } from './LoginForm.styles';
 
 interface FormValues {
-  firstName: string;
-  lastName: string;
   email: string;
   password: string;
 }
 
-// Stores existing emails for validation checks
-// when server responds with "email already in use"
-const emailsInUse: string[] = [];
-
 const formSchema = Yup.object({
-  firstName: Yup.string().default('').trim().max(30, 'Too long').required('Required'),
-  lastName: Yup.string().default('').trim().max(30, 'Too long').required('Required'),
-  email: Yup.string()
-    .default('')
-    .trim()
-    .email('Invalid email')
-    .test('already-exists', 'Email already exists', function (value) {
-      return value ? !emailsInUse.includes(value.toLowerCase()) : true;
-    })
-    .required('Required'),
-  password: Yup.string().default('').min(6, 'Must be at least 6 characters').required('Required'),
+  email: Yup.string().default('').trim().email('Invalid email').required('Required'),
+  password: Yup.string().default('').required('Required'),
 });
 
-function SignUpForm() {
+function LoginForm() {
   const router = useRouter();
-  const [createUser] = useCreateUserMutation();
+  const [login] = useLoginMutation();
   const initialValues = formSchema.cast({}) as FormValues;
 
   const updateCache = (cache: ApolloCache<any>, user?: User | null) => {
@@ -69,38 +40,31 @@ function SignUpForm() {
     const castValues = formSchema.cast(values);
     helpers.setValues(castValues);
 
-    const { data } = await createUser({
+    const { data } = await login({
       variables: { input: castValues },
-      update: (cache, { data }) => updateCache(cache, data?.createUser.user),
+      update: (cache, { data }) => updateCache(cache, data?.login.user),
     });
 
-    if (data?.createUser.user) {
+    if (data?.login.user) {
       router.push('/');
     }
-    if (data?.createUser.error) {
-      emailsInUse.push(castValues.email.toLowerCase());
-      helpers.validateField('email');
+    if (data?.login.error) {
+      helpers.setFieldError('password', data.login.error.message);
     }
   };
 
   return (
-    <Box sx={sx.container}>
+    <Paper sx={sx.wrapper}>
       <Avatar sx={sx.avatar}>
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5" sx={sx.header}>
-        Sign up
+        Log in
       </Typography>
       <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={formSchema}>
         {({ isSubmitting, isValid, submitCount }) => (
           <Form>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <FormikTextField name="firstName" trimOnBlur fullWidth />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormikTextField name="lastName" trimOnBlur fullWidth />
-              </Grid>
               <Grid item xs={12}>
                 <FormikTextField name="email" trimOnBlur fullWidth />
               </Grid>
@@ -115,15 +79,15 @@ function SignUpForm() {
                   disabled={isSubmitting || (submitCount > 0 && !isValid)}
                   fullWidth
                 >
-                  Create Account
+                  Log in
                 </Button>
               </Grid>
             </Grid>
           </Form>
         )}
       </Formik>
-    </Box>
+    </Paper>
   );
 }
 
-export default SignUpForm;
+export default LoginForm;

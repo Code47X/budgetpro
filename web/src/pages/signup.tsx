@@ -5,7 +5,7 @@ import { withApollo } from '../utils/withApollo';
 
 function SignUpPage() {
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" sx={{ py: 8 }}>
       <SignUpForm />
     </Container>
   );
