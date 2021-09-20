@@ -18,8 +18,8 @@ function IndexPage() {
 
   return (
     <>
-      <Container component="main" maxWidth="xs">
-        <Typography variant="h5" textAlign="center" my={4}>
+      <Container component="main" maxWidth="xs" sx={{ py: 8 }}>
+        <Typography variant="h5" textAlign="center" mb={4}>
           BudgetPro
         </Typography>
         <Paper>

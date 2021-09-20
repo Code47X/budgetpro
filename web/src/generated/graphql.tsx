@@ -155,6 +155,30 @@ export type User = {
   email: Scalars['String'];
 };
 
+export type CreateBudgetMutationVariables = Exact<{
+  input: BudgetDateInput;
+}>;
+
+
+export type CreateBudgetMutation = (
+  { __typename?: 'Mutation' }
+  & { createBudget: (
+    { __typename?: 'CreateBudgetPayload' }
+    & { budget?: Maybe<(
+      { __typename?: 'Budget' }
+      & Pick<Budget, 'id' | 'month' | 'year'>
+      & { budgetGroups: Array<(
+        { __typename?: 'BudgetGroup' }
+        & Pick<BudgetGroup, 'id' | 'type' | 'label'>
+        & { budgetItems: Array<(
+          { __typename?: 'BudgetItem' }
+          & Pick<BudgetItem, 'id' | 'name'>
+        )> }
+      )> }
+    )> }
+  ) }
+);
+
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
 }>;
@@ -251,6 +275,52 @@ export type MeQuery = (
 );
 
 
+export const CreateBudgetDocument = gql`
+    mutation CreateBudget($input: BudgetDateInput!) {
+  createBudget(input: $input) {
+    budget {
+      id
+      month
+      year
+      budgetGroups {
+        id
+        type
+        label
+        budgetItems {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateBudgetMutationFn = Apollo.MutationFunction<CreateBudgetMutation, CreateBudgetMutationVariables>;
+
+/**
+ * __useCreateBudgetMutation__
+ *
+ * To run a mutation, you first call `useCreateBudgetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBudgetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBudgetMutation, { data, loading, error }] = useCreateBudgetMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateBudgetMutation(baseOptions?: Apollo.MutationHookOptions<CreateBudgetMutation, CreateBudgetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateBudgetMutation, CreateBudgetMutationVariables>(CreateBudgetDocument, options);
+      }
+export type CreateBudgetMutationHookResult = ReturnType<typeof useCreateBudgetMutation>;
+export type CreateBudgetMutationResult = Apollo.MutationResult<CreateBudgetMutation>;
+export type CreateBudgetMutationOptions = Apollo.BaseMutationOptions<CreateBudgetMutation, CreateBudgetMutationVariables>;
 export const CreateUserDocument = gql`
     mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {

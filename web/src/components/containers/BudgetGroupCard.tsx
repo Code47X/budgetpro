@@ -1,4 +1,4 @@
-import { Card, CardContent, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Divider, Grid, Paper, Stack, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { BudgetGroup, BudgetItem, useReorderBudgetItemsMutation } from '../../generated/graphql';
@@ -9,9 +9,9 @@ interface HeaderRowProps {
 
 function HeaderRow({ budgetGroup }: HeaderRowProps) {
   return (
-    <Grid container>
+    <Grid container alignItems="center">
       <Grid item xs={6}>
-        <Typography variant="h6">{budgetGroup.label}</Typography>
+        <TextField value={budgetGroup.label} />
       </Grid>
       <Grid item xs={3}>
         <Typography variant="h6" align="right">
@@ -41,14 +41,17 @@ function BudgetItemRow({ budgetItem, idx }: BudgetItemRowProps) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
+          alignItems="center"
         >
           <Grid item xs={6}>
-            <Typography variant="body1">{budgetItem.name}</Typography>
+            <TextField value={budgetItem.name} size="small" />
           </Grid>
           <Grid item xs={3}>
-            <Typography variant="body1" align="right">
-              {budgetItem.plannedAmount}
-            </Typography>
+            <TextField
+              value={budgetItem.plannedAmount}
+              size="small"
+              inputProps={{ sx: { textAlign: 'right' } }}
+            />
           </Grid>
           <Grid item xs={3}>
             <Typography variant="body1" align="right">
@@ -107,13 +110,13 @@ export function BudgetGroupCard({ budgetGroup }: BudgetGroupCardProps) {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Card>
-        <CardContent>
+      <Paper sx={{ p: 4 }}>
+        <Stack spacing={2}>
           <HeaderRow budgetGroup={budgetGroup} />
           <Divider />
           <Droppable droppableId={budgetGroup.id}>
             {provided => (
-              <Stack ref={provided.innerRef} {...provided.droppableProps}>
+              <Stack ref={provided.innerRef} {...provided.droppableProps} spacing={1}>
                 {budgetGroup.budgetItems.map((budgetItem, idx) => (
                   <BudgetItemRow key={budgetItem.id} budgetItem={budgetItem} idx={idx} />
                 ))}
@@ -121,8 +124,8 @@ export function BudgetGroupCard({ budgetGroup }: BudgetGroupCardProps) {
               </Stack>
             )}
           </Droppable>
-        </CardContent>
-      </Card>
+        </Stack>
+      </Paper>
     </DragDropContext>
   );
 }

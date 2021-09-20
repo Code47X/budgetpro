@@ -1,0 +1,20 @@
+mutation CreateBudget($input: BudgetDateInput!) {
+  createBudget(input: $input) {
+    budget {
+      id
+      month
+      year
+      budgetGroups {
+        id
+        type
+        label
+        budgetItems {
+          id
+          name
+          position
+          plannedAmount
+        }
+      }
+    }
+  }
+}

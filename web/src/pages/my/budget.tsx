@@ -8,7 +8,7 @@ import { withApollo } from '../../utils/withApollo';
 const BudgetPage: React.FC = () => {
   return (
     <AuthenticatedPage>
-      <Container component="main" maxWidth="md">
+      <Container component="main" maxWidth="md" sx={{ py: 8 }}>
         <BudgetSheet />
         <UserCard />
       </Container>
